@@ -5,17 +5,18 @@ services:
 
 env:
   matrix:
-  - JOB_ARCH=amd64
-  - JOB_ARCH=arm64
-  - JOB_ARCH=armel
-  - JOB_ARCH=armhf
-  - JOB_ARCH=i386
-  - JOB_ARCH=mips
-  - JOB_ARCH=mips64el
-  - JOB_ARCH=mipsel
-  - JOB_ARCH=ppc64el
-  - JOB_ARCH=s390x
+  - JOB_SUITE=stretch JOB_ARCH=amd64
+  - JOB_SUITE=stretch JOB_ARCH=arm64
+  - JOB_SUITE=stretch JOB_ARCH=armel
+  - JOB_SUITE=stretch JOB_ARCH=armhf
+  - JOB_SUITE=stretch JOB_ARCH=i386
+  - JOB_SUITE=stretch JOB_ARCH=mips
+  - JOB_SUITE=stretch JOB_ARCH=mips64el
+  - JOB_SUITE=stretch JOB_ARCH=mipsel
+  - JOB_SUITE=stretch JOB_ARCH=ppc64el
+  - JOB_SUITE=stretch JOB_ARCH=s390x
   global:
+  - TESTING_SUITE=$(curl --output - http://ftp.debian.org/debian/dists/testing/Release | grep '^Codename:' | awk '{print $2}')
   - DOCKER_EXEC="sudo docker exec test_container"
   - secure: "kOvEwoUWln7f4tH6LA7CsTsBiCL1ngpfg2s1QK20l+yu95HUbHfTkM9TLzxHSI0foQYSnzTXCw4cCd0k6bIRktaBFa5KOHHktimtT0/sVTtaQxAHxeTTKieRsp5ABaaLifssmssw6gLsusIWxkGFzQrGiDnwl6mrtRqzhgENyxMZVEQuO4QaqORcvTj0OQe7IPQF4Sj1dYrVF4376jRX442vSOxrUK25ZpWt/CbZGLnKS9yK7WHx2plkwqmsib54u6fupJ+k1WbLQ9Rg2IlImjLYHuziKfUA7jcKQ+D4nhTqaxZ2D5verk1vVGIiLt6GHypyJeL+ecIToADiVNHyGaycKACflU0xh+QWDRvTVQh2HoKi6EeVDvwjmsLMnc24jNCaLXg64/ilwBk+b1kqYiY/MuQrEK6vgQqvTq9qSqlZpZY6S5fyd1K36iQskyUp0Ip3P2FqE0tIklJUOitIVu6x9xebfsn4m3K1yfWDSBDRSXrNjrH98v5sA0eFXyrJ0gSmerTk+N5VBhlPbKxGZvPcNgwWjUcqdQf3aeuBlJEIzbDY1Ub0JzSBc9tHmScj3PirlcBHFeqADcobCBUfwuxEVKnKpO0rpDK8b2m2421DzxNhmUNuidQMSj8IYfTUcy9vggvr9iORRG/xMXxkElfPUbXrQQb+tkreK2J2JKI="
 
@@ -31,7 +32,10 @@ addons:
     - qemu-user-static
 
 script:
-- docker build -t laarid/devel:${JOB_ARCH} ${JOB_ARCH}
+- docker build -t laarid/devel:${JOB_SUITE}-${JOB_ARCH} ${JOB_SUITE}/${JOB_ARCH}
+- if [ "${JOB_SUITE}" = "${TESTING_SUITE}" ]; then
+    docker tag laarid/devel:${JOB_SUITE}-${JOB_ARCH} laarid/devel:${JOB_ARCH};
+  fi
 - git clone -o laarid https://github.com/laarid/package_android-bionic.git test
 - |
   sudo docker run --detach --tty \
@@ -39,7 +43,7 @@ script:
     --volume ${TRAVIS_BUILD_DIR%${TRAVIS_REPO_SLUG}}:${TRAVIS_BUILD_DIR%${TRAVIS_REPO_SLUG}} \
     --workdir ${TRAVIS_BUILD_DIR}/test \
     --add-host dl.bintray.com:$(nslookup dl.bintray.com | grep -m1 -A1 Name: | grep Address: | awk '{print $2}') \
-    laarid/devel:${JOB_ARCH} \
+    laarid/devel:${JOB_SUITE}-${JOB_ARCH} \
     /bin/bash
 - ${DOCKER_EXEC} mk-build-deps
     --host-arch ${JOB_ARCH}
@@ -51,7 +55,10 @@ script:
 after_success:
 - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
-    docker push laarid/devel:${JOB_ARCH};
+    docker push laarid/devel:${JOB_SUITE}-${JOB_ARCH};
+    if [ "${JOB_SUITE}" = "${TESTING_SUITE}" ]; then
+      docker push laarid/devel:${JOB_ARCH};
+    fi
   fi
 
 notifications:
