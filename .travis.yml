@@ -32,21 +32,6 @@ addons:
 
 script:
 - docker build -t laarid/devel:${JOB_ARCH} ${JOB_ARCH}
-- git clone -o laarid https://github.com/laarid/package_android-bionic.git test
-- |
-  sudo docker run --detach --tty \
-    --name test_container \
-    --volume ${TRAVIS_BUILD_DIR%${TRAVIS_REPO_SLUG}}:${TRAVIS_BUILD_DIR%${TRAVIS_REPO_SLUG}} \
-    --workdir ${TRAVIS_BUILD_DIR}/test \
-    --add-host dl.bintray.com:$(nslookup dl.bintray.com | grep -m1 -A1 Name: | grep Address: | awk '{print $2}') \
-    laarid/devel:${JOB_ARCH} \
-    /bin/bash
-- ${DOCKER_EXEC} mk-build-deps
-    --host-arch ${JOB_ARCH}
-    --install --remove
-    --root-cmd sudo
-    --tool 'apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y'
-- ${DOCKER_EXEC} dpkg-buildpackage --host-arch ${JOB_ARCH} -i -us -uc -b
 
 after_success:
 - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
