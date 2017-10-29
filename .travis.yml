@@ -17,20 +17,17 @@ env:
   global:
   - secure: "kOvEwoUWln7f4tH6LA7CsTsBiCL1ngpfg2s1QK20l+yu95HUbHfTkM9TLzxHSI0foQYSnzTXCw4cCd0k6bIRktaBFa5KOHHktimtT0/sVTtaQxAHxeTTKieRsp5ABaaLifssmssw6gLsusIWxkGFzQrGiDnwl6mrtRqzhgENyxMZVEQuO4QaqORcvTj0OQe7IPQF4Sj1dYrVF4376jRX442vSOxrUK25ZpWt/CbZGLnKS9yK7WHx2plkwqmsib54u6fupJ+k1WbLQ9Rg2IlImjLYHuziKfUA7jcKQ+D4nhTqaxZ2D5verk1vVGIiLt6GHypyJeL+ecIToADiVNHyGaycKACflU0xh+QWDRvTVQh2HoKi6EeVDvwjmsLMnc24jNCaLXg64/ilwBk+b1kqYiY/MuQrEK6vgQqvTq9qSqlZpZY6S5fyd1K36iQskyUp0Ip3P2FqE0tIklJUOitIVu6x9xebfsn4m3K1yfWDSBDRSXrNjrH98v5sA0eFXyrJ0gSmerTk+N5VBhlPbKxGZvPcNgwWjUcqdQf3aeuBlJEIzbDY1Ub0JzSBc9tHmScj3PirlcBHFeqADcobCBUfwuxEVKnKpO0rpDK8b2m2421DzxNhmUNuidQMSj8IYfTUcy9vggvr9iORRG/xMXxkElfPUbXrQQb+tkreK2J2JKI="
 
-branches:
-  only: master
-
 before_script:
 - docker run --rm --privileged vicamo/binfmt-qemu:latest
 - cat /proc/sys/fs/binfmt_misc/qemu-*
 
 script:
-- docker build -t laarid/devel:${JOB_ARCH} ${JOB_ARCH}
+- docker build -t laarid/devel:${TRAVIS_BRANCH}-${JOB_ARCH} ${JOB_ARCH}
 
 after_success:
 - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     docker login -u "$DOCKER_USER" -p "$DOCKER_PASS";
-    docker push laarid/devel:${JOB_ARCH};
+    docker push laarid/devel:${TRAVIS_BRANCH}-${JOB_ARCH};
   fi
 
 notifications:

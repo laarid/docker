@@ -1,1 +1,1 @@
-FROM laarid/cross-build:mips
+FROM laarid/cross-build:buster-mips

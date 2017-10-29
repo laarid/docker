@@ -1,1 +1,1 @@
-FROM laarid/cross-build:ppc64el
+FROM laarid/cross-build:buster-ppc64el

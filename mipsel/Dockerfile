@@ -1,1 +1,1 @@
-FROM laarid/cross-build:mipsel
+FROM laarid/cross-build:buster-mipsel

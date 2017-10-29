@@ -1,1 +1,1 @@
-FROM laarid/cross-build:armhf
+FROM laarid/cross-build:buster-armhf

@@ -1,1 +1,1 @@
-FROM laarid/cross-build:arm64
+FROM laarid/cross-build:buster-arm64
