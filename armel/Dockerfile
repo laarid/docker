@@ -1,1 +1,1 @@
-FROM laarid/cross-build:sid-armel
+FROM laarid/cross-build:experimental-armel

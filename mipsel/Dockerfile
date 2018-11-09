@@ -1,1 +1,1 @@
-FROM laarid/cross-build:sid-mipsel
+FROM laarid/cross-build:experimental-mipsel

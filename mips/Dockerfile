@@ -1,1 +1,1 @@
-FROM laarid/cross-build:sid-mips
+FROM laarid/cross-build:experimental-mips

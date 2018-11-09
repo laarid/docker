@@ -1,1 +1,1 @@
-FROM laarid/cross-build:sid-ppc64el
+FROM laarid/cross-build:experimental-ppc64el
