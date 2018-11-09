@@ -16,7 +16,7 @@ env:
   - JOB_ARCH=s390x
 
 before_script:
-- docker run --rm --privileged vicamo/binfmt-qemu:latest
+- docker run --rm --privileged vicamo/binfmt-qemu:bionic
 - cat /proc/sys/fs/binfmt_misc/qemu-*
 
 script:

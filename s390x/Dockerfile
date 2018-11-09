@@ -1,1 +1,1 @@
-FROM laarid/cross-build:buster-s390x
+FROM laarid/cross-build:sid-s390x

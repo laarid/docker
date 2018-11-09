@@ -1,1 +1,1 @@
-FROM laarid/cross-build:buster-armel
+FROM laarid/cross-build:sid-armel

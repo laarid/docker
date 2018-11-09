@@ -1,1 +1,1 @@
-FROM laarid/cross-build:buster-mips64el
+FROM laarid/cross-build:sid-mips64el
